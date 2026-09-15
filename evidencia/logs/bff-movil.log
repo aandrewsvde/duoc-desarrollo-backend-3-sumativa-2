@@ -31,3 +31,5 @@ This generated password is for development use only. Your security configuration
 22:25:09.511 [https-jsse-nio-8444-exec-5] INFO  o.s.w.s.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
 22:25:09.513 [https-jsse-nio-8444-exec-5] INFO  o.s.w.s.DispatcherServlet - Completed initialization in 1 ms
 22:27:21.699 [https-jsse-nio-8444-exec-6] INFO  o.s.a.AbstractOpenApiResource - Init duration for springdoc-openapi is: 225 ms
+22:32:45.759 [https-jsse-nio-8444-exec-1] INFO  o.s.a.AbstractOpenApiResource - Init duration for springdoc-openapi is: 84 ms
+22:34:04.774 [https-jsse-nio-8444-exec-10] INFO  c.d.b.b.m.a.ServicioAutenticacionMovil - Sesion movil abierta: usuario=movil101 cuenta=101 dispositivo=pixel-8-abc123 vigencia=15min

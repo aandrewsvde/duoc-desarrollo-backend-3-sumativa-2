@@ -31,3 +31,6 @@ This generated password is for development use only. Your security configuration
 22:25:09.744 [https-jsse-nio-8445-exec-6] INFO  o.s.w.s.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
 22:25:09.745 [https-jsse-nio-8445-exec-6] INFO  o.s.w.s.DispatcherServlet - Completed initialization in 1 ms
 22:27:34.215 [https-jsse-nio-8445-exec-1] INFO  o.s.a.AbstractOpenApiResource - Init duration for springdoc-openapi is: 215 ms
+22:32:57.823 [https-jsse-nio-8445-exec-2] INFO  o.s.a.AbstractOpenApiResource - Init duration for springdoc-openapi is: 78 ms
+22:36:35.786 [https-jsse-nio-8445-exec-10] INFO  c.d.b.b.c.a.ServicioAutenticacionCajero - Sesion de cajero abierta: tarjeta=**** **** **** 0101 cuenta=101 terminal=ATM-PROVIDENCIA-07 vigencia=120s
+22:37:35.723 [https-jsse-nio-8445-exec-6] INFO  c.d.b.b.c.o.ServicioOperacionCajero - Retiro entregado en terminal ATM-PROVIDENCIA-07: monto=3000 autorizacion=AUT-763893

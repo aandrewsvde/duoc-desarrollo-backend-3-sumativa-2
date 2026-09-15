@@ -32,3 +32,5 @@ This generated password is for development use only. Your security configuration
 22:25:09.272 [https-jsse-nio-8443-exec-5] INFO  o.s.w.s.DispatcherServlet - Completed initialization in 1 ms
 22:27:01.916 [https-jsse-nio-8443-exec-9] INFO  o.s.a.AbstractOpenApiResource - Init duration for springdoc-openapi is: 332 ms
 22:32:10.759 [https-jsse-nio-8443-exec-7] INFO  o.s.a.AbstractOpenApiResource - Init duration for springdoc-openapi is: 130 ms
+22:38:10.742 [https-jsse-nio-8443-exec-6] INFO  c.d.b.b.w.a.ServicioAutenticacionWeb - Sesion web abierta: usuario=cliente101 perfil=CLIENTE cuenta=101 vigencia=8h
+22:39:07.905 [https-jsse-nio-8443-exec-5] INFO  c.d.b.b.w.p.ServicioPanelWeb - Panel de la cuenta 101 compuesto en 68 ms a partir de 3 recursos del core

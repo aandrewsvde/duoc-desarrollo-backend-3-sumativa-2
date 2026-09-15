@@ -554,6 +554,10 @@ mvn test
 
 ```
 evidencia/
+├── capturas/                       10 capturas de pantalla + su indice
+│   ├── README.md                   que evidencia cada una
+│   ├── 01-bff-web-swagger.png      ... 04-core-banking-api-swagger.png
+│   └── 05-movil-login-ejecutado.png ... 10-web-rechaza-token-movil.png
 ├── funcional/
 │   └── recorrido-completo.txt      recorrido de los 3 canales en 8 secciones
 ├── comparativa/
@@ -561,11 +565,29 @@ evidencia/
 ├── base_de_datos/
 │   └── estado-del-core.txt         datos cargados, credenciales BCrypt, retiros
 └── logs/
+    ├── 00-arranque.txt
     ├── core-banking-api.log
     ├── bff-web.log
     ├── bff-movil.log
     └── bff-cajero.log
 ```
+
+### Capturas de pantalla
+
+Diez capturas tomadas sobre la plataforma en ejecución, todas con la URL
+`https://` visible. Las cuatro primeras muestran el OpenAPI de cada servicio
+—con los DTO propios de cada canal, que es lo que hace visible su independencia—;
+las seis restantes son **ejecuciones reales** desde el navegador:
+
+| Captura | Qué evidencia |
+|---|---|
+| `05-movil-login-ejecutado.png` | Login del canal móvil: HTTP 200 y token del canal `MOVIL` |
+| `07-movil-resumen-ejecutado.png` | Respuesta mínima real: `f`, `t`, `m`, importes enteros |
+| `08-cajero-retiro-ejecutado.png` | Retiro de $3.000 aprobado con comprobante; cabeceras `strict-transport-security` y `gzip` |
+| `09-web-panel-ejecutado.png` | Panel compuesto en una sola respuesta; el saldo **ya refleja** el retiro de la captura 08, lo que evidencia el core compartido |
+| `10-web-rechaza-token-movil.png` | Token válido y vigente del canal móvil presentado al canal web: **HTTP 401** |
+
+El detalle de cada una está en `evidencia/capturas/README.md`.
 
 `recorrido-completo.txt` cubre, en orden: verificación de los certificados TLS de
 los cuatro servicios, autenticación en los tres canales con el contenido de cada

@@ -36,3 +36,10 @@ This generated password is for development use only. Your security configuration
 22:25:09.028 [https-jsse-nio-8843-exec-5] INFO  o.s.w.s.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
 22:25:09.029 [https-jsse-nio-8843-exec-5] INFO  o.s.w.s.DispatcherServlet - Completed initialization in 1 ms
 22:25:09.408 [main] INFO  c.d.b.c.c.InicializadorCredenciales - Credenciales sembradas: 7 usuarios de canal y 3 tarjetas (hash BCrypt)
+22:33:08.772 [https-jsse-nio-8843-exec-4] INFO  o.s.a.AbstractOpenApiResource - Init duration for springdoc-openapi is: 309 ms
+22:34:04.762 [https-jsse-nio-8843-exec-7] INFO  c.d.b.c.i.IdentidadServicio - Autenticacion correcta en canal MOVIL: sujeto='mov***' perfil=CLIENTE cuenta=101
+22:36:35.779 [https-jsse-nio-8843-exec-3] INFO  c.d.b.c.i.IdentidadServicio - Tarjeta autenticada: **** **** **** 0101 cuenta=101
+22:37:35.710 [https-jsse-nio-8843-exec-1] INFO  c.d.b.c.r.RetiroServicio - Retiro aprobado: cuenta=101 monto=3000 terminal=ATM-PROVIDENCIA-07 autorizacion=AUT-763893 saldo 8000.00 -> 5000.00
+22:38:10.733 [https-jsse-nio-8843-exec-2] INFO  c.d.b.c.i.IdentidadServicio - Autenticacion correcta en canal WEB: sujeto='cli***' perfil=CLIENTE cuenta=101
+22:41:25.542 [SpringApplicationShutdownHook] INFO  c.z.hikari.HikariDataSource - core-pool - Shutdown initiated...
+22:41:25.547 [SpringApplicationShutdownHook] INFO  c.z.hikari.HikariDataSource - core-pool - Shutdown completed.
