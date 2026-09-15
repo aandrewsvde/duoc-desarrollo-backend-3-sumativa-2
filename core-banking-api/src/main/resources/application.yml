@@ -1,0 +1,103 @@
+server:
+  port: 8843
+  ssl:
+    enabled: true
+    bundle: core-banking-api          # el par de claves TLS de este servicio
+  compression:
+    enabled: true
+    mime-types: application/json
+    min-response-size: 1KB
+
+spring:
+  application:
+    name: core-banking-api
+
+  ssl:
+    bundle:
+      jks:
+        # Certificado de servidor de este servicio.
+        core-banking-api:
+          keystore:
+            location: file:../certificados/core-banking-api.p12
+            password: bancoxyz
+            type: PKCS12
+
+  datasource:
+    url: jdbc:postgresql://localhost:5434/bancoxyz_bff
+    username: bancoxyz
+    password: bancoxyz
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      pool-name: core-pool
+      maximum-pool-size: 20
+      minimum-idle: 4
+
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:db/esquema.sql
+      data-locations: classpath:db/semilla-datos.sql
+      continue-on-error: false
+
+  jackson:
+    default-property-inclusion: non_null
+    serialization:
+      write-dates-as-timestamps: false
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+logging:
+  level:
+    root: INFO
+    com.duoc.bancoxyz: INFO
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{28} - %msg%n"
+
+# =====================================================================
+# Configuracion del core
+# =====================================================================
+core-api:
+  # Secreto con el que se firman y verifican los tokens de servicio.
+  # En produccion vendria de un gestor de secretos, no de un archivo.
+  secreto-servicio: "core-bancoxyz-secreto-de-servicio-2026-min-32-bytes"
+  anio-ejercicio: 2024
+
+  # ---------------------------------------------------------------
+  # Alcance de cada canal EN EL CORE.
+  #
+  # Esta es la segunda linea de defensa de la autorizacion por canal: el
+  # BFF movil no puede invocar el endpoint de retiros aunque alguien
+  # lograra construir una ruta hacia el, y el BFF web no puede validar
+  # tarjetas. El permiso lo concede el core, no el token del llamante.
+  # ---------------------------------------------------------------
+  clientes:
+    - id: bff-web
+      descripcion: "Canal web: consulta completa, sin operaciones de dinero"
+      permisos: [LEER_CUENTAS, LEER_MOVIMIENTOS, LEER_RESUMEN, VALIDAR_IDENTIDAD]
+    - id: bff-movil
+      descripcion: "Canal movil: consulta acotada, sin resumen anual ni dinero"
+      permisos: [LEER_CUENTAS, LEER_MOVIMIENTOS, VALIDAR_IDENTIDAD]
+    - id: bff-cajero
+      descripcion: "Canal cajero: saldo y retiro; no lee historial ni valida usuarios web"
+      permisos: [LEER_CUENTAS, REGISTRAR_RETIRO, VALIDAR_TARJETA]
+
+  # ---------------------------------------------------------------
+  # Credenciales de demostracion.
+  # Se siembran con BCrypt en el primer arranque. Estan documentadas en el
+  # README para que el evaluador pueda probar los tres canales.
+  # ---------------------------------------------------------------
+  credenciales-demo:
+    usuarios:
+      - { usuario: cliente101, password: "Web2024$101",  canal: WEB,   perfil: CLIENTE,   cuenta: 101 }
+      - { usuario: cliente102, password: "Web2024$102",  canal: WEB,   perfil: CLIENTE,   cuenta: 102 }
+      - { usuario: cliente103, password: "Web2024$103",  canal: WEB,   perfil: CLIENTE,   cuenta: 103 }
+      - { usuario: ejecutivo,  password: "Ejecutivo2024$", canal: WEB, perfil: EJECUTIVO, cuenta: null }
+      - { usuario: movil101,   password: "Movil2024$101", canal: MOVIL, perfil: CLIENTE,  cuenta: 101 }
+      - { usuario: movil102,   password: "Movil2024$102", canal: MOVIL, perfil: CLIENTE,  cuenta: 102 }
+      - { usuario: movil103,   password: "Movil2024$103", canal: MOVIL, perfil: CLIENTE,  cuenta: 103 }
+    tarjetas:
+      - { numero: "4051885600000101", pin: "1101", cuenta: 101 }
+      - { numero: "4051885600000102", pin: "1102", cuenta: 102 }
+      - { numero: "4051885600000103", pin: "1103", cuenta: 103 }

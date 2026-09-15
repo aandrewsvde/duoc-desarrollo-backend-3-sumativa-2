@@ -1,0 +1,613 @@
+EVIDENCIA DE EJECUCION - Banco XYZ, patron Backend for Frontend
+Generado: 2026-09-14 22:22:15
+
+========================================================================
+ 1. HTTPS: los cuatro servicios presentan certificado de la CA del banco
+========================================================================
+  core-banking-api   puerto 8843
+      subject=C = CL, ST = Santiago, L = Santiago, O = Banco XYZ, OU = Canales, CN = core-banking-api issuer=C = CL, ST = Santiago, L = Santiago, O = Banco XYZ, OU = Plataforma, CN = Banco XYZ Dev CA 
+      Verify return code: 0 (ok)
+  bff-web            puerto 8443
+      subject=C = CL, ST = Santiago, L = Santiago, O = Banco XYZ, OU = Canales, CN = bff-web issuer=C = CL, ST = Santiago, L = Santiago, O = Banco XYZ, OU = Plataforma, CN = Banco XYZ Dev CA 
+      Verify return code: 0 (ok)
+  bff-movil          puerto 8444
+      subject=C = CL, ST = Santiago, L = Santiago, O = Banco XYZ, OU = Canales, CN = bff-movil issuer=C = CL, ST = Santiago, L = Santiago, O = Banco XYZ, OU = Plataforma, CN = Banco XYZ Dev CA 
+      Verify return code: 0 (ok)
+  bff-cajero         puerto 8445
+      subject=C = CL, ST = Santiago, L = Santiago, O = Banco XYZ, OU = Canales, CN = bff-cajero issuer=C = CL, ST = Santiago, L = Santiago, O = Banco XYZ, OU = Plataforma, CN = Banco XYZ Dev CA 
+      Verify return code: 0 (ok)
+
+--- Una peticion que no confia en la CA del banco es rechazada por el cliente
+  curl: (60) SSL certificate problem: self-signed certificate in certificate chain
+  More details here: https://curl.se/docs/sslcerts.html
+  
+  Los certificados los firma una CA propia; el cliente debe confiar en ella
+  de forma explicita (--cacert), que es como opera una PKI corporativa.
+
+========================================================================
+ 2. AUTENTICACION: cada canal emite su propio token
+========================================================================
+
+--- Canal WEB: usuario y contrasena
+{
+    "token": "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJiZmYtd2ViIiwiYXVkIjpbImNhbmFsLXdlYiJdLCJzdWIiOiJjbGllbnRlMTAxIiwiY2FuYWwiOiJXRUIiLCJyb2xlcyI6WyJST0xFX0NMSUVOVEVfV0VCIl0sInBlcm1pc29zIjpbIlZFUl9QQU5FTCIsIlZFUl9NT1ZJTUlFTlRPUyIsIlZFUl9SRVNVTUVOX0FOVUFMIl0sImN1ZW50YSI6MTAxLCJjb250ZXh0byI6Im5hdmVnYWRvciIsImlhdCI6MTc4OTQzNTMzNSwiZXhwIjoxNzg5NDY0MTM1fQ.9rh0W19xAX2d-yJa9CG05osuQy5y9Y8_xYdEuIAkGBc",
+    "tipoToken": "Bearer",
+    "expiraEnSegundos": 28800,
+    "usuario": "cliente101",
+    "titular": "Diana Prince",
+    "perfil": "CLIENTE",
+    "permisos": [
+        "VER_PANEL",
+        "VER_MOVIMIENTOS",
+        "VER_RESUMEN_ANUAL"
+    ],
+    "cuentaPrincipal": 101
+}
+
+--- Contenido del token WEB
+{
+  "iss": "bff-web",
+  "aud": [
+    "canal-web"
+  ],
+  "sub": "cliente101",
+  "canal": "WEB",
+  "roles": [
+    "ROLE_CLIENTE_WEB"
+  ],
+  "permisos": [
+    "VER_PANEL",
+    "VER_MOVIMIENTOS",
+    "VER_RESUMEN_ANUAL"
+  ],
+  "cuenta": 101,
+  "contexto": "navegador"
+}
+vigencia: 28800 segundos
+
+--- Canal MOVIL: usuario, contrasena e identificador de dispositivo
+{
+    "token": "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJiZmYtbW92aWwiLCJhdWQiOlsiY2FuYWwtbW92aWwiXSwic3ViIjoibW92aWwxMDEiLCJjYW5hbCI6Ik1PVklMIiwicm9sZXMiOlsiUk9MRV9DTElFTlRFX01PVklMIl0sInBlcm1pc29zIjpbIlZFUl9SRVNVTUVOIiwiVkVSX01PVklNSUVOVE9TIl0sImN1ZW50YSI6MTAxLCJjb250ZXh0byI6InBpeGVsLTgtYWJjMTIzIiwiaWF0IjoxNzg5NDM1MzM1LCJleHAiOjE3ODk0MzYyMzV9.aQ9wZ8jTydEt-WJVAIOXAPDRAau7ikOZm09o2uBDQx8",
+    "expiraEn": 900,
+    "cuenta": 101
+}
+
+--- Contenido del token MOVIL (vigencia mas corta y ligado al dispositivo)
+{
+  "iss": "bff-movil",
+  "aud": [
+    "canal-movil"
+  ],
+  "sub": "movil101",
+  "canal": "MOVIL",
+  "roles": [
+    "ROLE_CLIENTE_MOVIL"
+  ],
+  "permisos": [
+    "VER_RESUMEN",
+    "VER_MOVIMIENTOS"
+  ],
+  "cuenta": 101,
+  "contexto": "pixel-8-abc123"
+}
+vigencia: 900 segundos
+
+--- Canal CAJERO: tarjeta y PIN
+{
+    "token": "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJiZmYtY2FqZXJvIiwiYXVkIjpbImNhbmFsLWNhamVybyJdLCJzdWIiOiIqKioqICoqKiogKioqKiAwMTAxIiwiY2FuYWwiOiJDQUpFUk8iLCJyb2xlcyI6WyJST0xFX0NBSkVSTyJdLCJwZXJtaXNvcyI6WyJDT05TVUxUQVJfU0FMRE8iLCJSRVRJUkFSX0VGRUNUSVZPIl0sImN1ZW50YSI6MTAxLCJjb250ZXh0byI6IkFUTS1QUk9WSURFTkNJQS0wNyIsImlhdCI6MTc4OTQzNTMzNSwiZXhwIjoxNzg5NDM1NDU1fQ.Q__Io0geLWyoYk6OqL5SXo4tQ-WZSFcScfowZyDpNc0",
+    "expiraEnSegundos": 120,
+    "titular": "Diana Prince",
+    "terminal": "ATM-PROVIDENCIA-07"
+}
+
+--- Contenido del token CAJERO (120 segundos y ligado al terminal)
+{
+  "iss": "bff-cajero",
+  "aud": [
+    "canal-cajero"
+  ],
+  "sub": "**** **** **** 0101",
+  "canal": "CAJERO",
+  "roles": [
+    "ROLE_CAJERO"
+  ],
+  "permisos": [
+    "CONSULTAR_SALDO",
+    "RETIRAR_EFECTIVO"
+  ],
+  "cuenta": 101,
+  "contexto": "ATM-PROVIDENCIA-07"
+}
+vigencia: 120 segundos
+
+--- Credenciales incorrectas: mismo mensaje generico, sin revelar si existe el usuario
+{
+    "instante": "2026-09-14T22:22:15.827222563-03:00",
+    "estado": 500,
+    "error": "Error interno",
+    "detalle": "La solicitud no pudo completarse. Revise el log del servicio.",
+    "ruta": "/api/web/auth/login"
+}
+{
+    "instante": "2026-09-14T22:22:15.93012934-03:00",
+    "estado": 500,
+    "error": "Error interno",
+    "detalle": "La solicitud no pudo completarse. Revise el log del servicio.",
+    "ruta": "/api/cajero/auth/pin"
+}
+
+========================================================================
+ 3. CANAL WEB: respuesta completa y compuesta
+========================================================================
+
+--- GET /api/web/cuentas/101/panel  (una sola llamada)
+{
+    "cuenta": {
+        "numeroCuenta": 101,
+        "titular": "Diana Prince",
+        "tipoCuenta": "AHORRO",
+        "tipoCuentaDescripcion": "Cuenta de ahorro",
+        "saldoActual": 8000.0,
+        "saldoFormateado": "$8.000",
+        "moneda": "CLP",
+        "edadTitular": 35,
+        "estado": "ACTIVA",
+        "consultadoEn": "2026-09-14T22:22:15.984361803-03:00"
+    },
+    "resumenAnual": {
+        "anio": 2024,
+        "totalMovimientos": 29,
+        "totalAbonos": 37000.0,
+        "totalAbonosFormateado": "$37.000",
+        "totalCargos": 23000.0,
+        "totalCargosFormateado": "$23.000",
+        "netoPeriodo": 14000.0,
+        "netoPeriodoFormateado": "$14.000",
+        "primerMovimiento": "2024-01-07",
+        "ultimoMovimiento": "2024-12-22"
+    },
+    "desglosePorTipo": [
+        {
+            "tipo": "DEPOSITO",
+            "etiqueta": "Deposito",
+            "cantidad": 16,
+            "monto": 37000.0,
+            "montoFormateado": "$37.000",
+            "porcentaje": 61.67
+        },
+        {
+            "tipo": "COMPRA",
+            "etiqueta": "Compra con tarjeta",
+            "cantidad": 7,
+            "monto": 12000.0,
+            "montoFormateado": "$12.000",
+            "porcentaje": 20.0
+        },
+        {
+            "tipo": "RETIRO",
+            "etiqueta": "Retiro de efectivo",
+            "cantidad": 5,
+            "monto": 9500.0,
+            "montoFormateado": "$9.500",
+            "porcentaje": 15.83
+        },
+        {
+            "tipo": "PAGO",
+            "etiqueta": "Pago de servicio",
+            "cantidad": 1,
+            "monto": 1500.0,
+            "montoFormateado": "$1.500",
+            "porcentaje": 2.5
+        }
+    ],
+    "serieMensual": [
+        {
+            "mes": "2024-01",
+            "etiquetaMes": "Enero 2024",
+            "abonos": 6500.0,
+            "cargos": 1500.0,
+            "neto": 5000.0
+        },
+        {
+            "mes": "2024-02",
+            "etiquetaMes": "Febrero 2024",
+            "abonos": 2500.0,
+            "cargos": 2000.0,
+            "neto": 500.0
+        },
+        {
+            "mes": "2024-03",
+            "etiquetaMes": "Marzo 2024",
+            "abonos": 3000.0,
+            "cargos": 2000.0,
+            "neto": 1000.0
+        },
+        {
+            "mes": "2024-04",
+            "etiquetaMes": "Abril 2024",
+            "abonos": 3000.0,
+            "cargos": 5500.0,
+            "neto": -2500.0
+        },
+        {
+            "mes": "2024-06",
+            "etiquetaMes": "Junio 2024",
+            "abonos": 7000.0,
+            "cargos": 0,
+            "neto": 7000.0
+        },
+        {
+            "mes": "2024-07",
+            "etiquetaMes": "Julio 2024",
+            "abonos": 0,
+            "cargos": 4500.0,
+            "neto": -4500.0
+        },
+        {
+            "mes": "2024-08",
+            "etiquetaMes": "Agosto 2024",
+            "abonos": 3000.0,
+            "cargos": 4000.0,
+            "neto": -1000.0
+        },
+        {
+            "mes": "2024-09",
+            "etiquetaMes": "Septiembre 2024",
+            "abonos": 8000.0,
+            "cargos": 0,
+            "neto": 8000.0
+        },
+        {
+            "mes": "2024-10",
+            "etiquetaMes": "Octubre 2024",
+            "abonos": 1500.0,
+            "cargos": 0,
+            "neto": 1500.0
+        },
+        {
+            "mes": "2024-11",
+            "etiquetaMes": "Noviembre 2024",
+            "abonos": 0,
+            "cargos": 3500.0,
+            "neto": -3500.0
+        },
+        {
+            "mes": "2024-12",
+            "etiquetaMes": "Diciembre 2024",
+            "abonos": 2500.0,
+            "cargos": 0,
+            "neto": 2500.0
+        }
+    ],
+    "ultimosMovimientos": [
+        {
+            "id": 29,
+            "fecha": "2024-12-22",
+            "fechaFormateada": "22/12/2024",
+            "tipo": "DEPOSITO",
+            "etiquetaTipo": "Deposito",
+            "descripcion": "Ingreso navide\u00f1o",
+            "monto": 2500.0,
+            "montoFormateado": "$2.500",
+            "signo": 1,
+            "naturaleza": "ABONO"
+        },
+        {
+            "id": 28,
+            "fecha": "2024-11-23",
+            "fechaFormateada": "23/11/2024",
+            "tipo": "COMPRA",
+            "etiquetaTipo": "Compra con tarjeta",
+            "descripcion": "Compra en tienda",
+            "monto": 1500.0,
+            "montoFormateado": "$1.500",
+            "signo": -1,
+            "naturaleza": "CARGO"
+        },
+        {
+            "id": 27,
+            "fecha": "2024-11-22",
+            "fechaFormateada": "22/11/2024",
+            "tipo": "RETIRO",
+            "etiquetaTipo": "Retiro de efectivo",
+            "descripcion": "SIN DESCRIPCION",
+            "monto": 1000.0,
+            "montoFormateado": "$1.000",
+            "signo": -1,
+            "naturaleza": "CARGO"
+        },
+        {
+            "id": 26,
+            "fecha": "2024-11-11",
+            "fechaFormateada": "11/11/2024",
+            "tipo": "COMPRA",
+            "etiquetaTipo": "Compra con tarjeta",
+            "descripcion": "Ingreso navide\u00f1o",
+            "monto": 1000.0,
+            "montoFormateado": "$1.000",
+            "signo": -1,
+            "naturaleza": "CARGO"
+        },
+        {
+            "id": 25,
+            "fecha": "2024-10-06",
+            "fechaFormateada": "06/10/2024",
+            "tipo": "DEPOSITO",
+            "etiquetaTipo": "Deposito",
+            "descripcion": "Ingreso mensual",
+            "monto": 1500.0,
+            "montoFormateado": "$1.500",
+            "signo": 1,
+            "naturaleza": "ABONO"
+        },
+        {
+            "id": 24,
+            "fecha": "2024-09-25",
+            "fechaFormateada": "25/09/2024",
+            "tipo": "DEPOSITO",
+            "etiquetaTipo": "Deposito",
+            "descripcion": "Ingreso mensual",
+            "monto": 2500.0,
+            "montoFormateado": "$2.500",
+            "signo": 1,
+            "naturaleza": "ABONO"
+        },
+        {
+            "id": 23,
+            "fecha": "2024-09-05",
+            "fechaFormateada": "05/09/2024",
+            "tipo": "DEPOSITO",
+            "etiquetaTipo": "Deposito",
+            "descripcion": "Ingreso extra",
+            "monto": 2500.0,
+            "montoFormateado": "$2.500",
+            "signo": 1,
+            "naturaleza": "ABONO"
+        },
+        {
+            "id": 22,
+            "fecha": "2024-09-02",
+            "fechaFormateada": "02/09/2024",
+            "tipo": "DEPOSITO",
+            "etiquetaTipo": "Deposito",
+            "descripcion": "Ingreso navide\u00f1o",
+            "monto": 3000.0,
+            "montoFormateado": "$3.000",
+            "signo": 1,
+            "naturaleza": "ABONO"
+        },
+        {
+            "id": 21,
+            "fecha": "2024-08-31",
+            "fechaFormateada": "31/08/2024",
+            "tipo": "DEPOSITO",
+            "etiquetaTipo": "Deposito",
+            "descripcion": "SIN DESCRIPCION",
+            "monto": 3000.0,
+            "montoFormateado": "$3.000",
+            "signo": 1,
+            "naturaleza": "ABONO"
+        },
+        {
+            "id": 20,
+            "fecha": "2024-08-04",
+            "fechaFormateada": "04/08/2024",
+            "tipo": "COMPRA",
+            "etiquetaTipo": "Compra con tarjeta",
+            "descripcion": "Compra en tienda",
+            "monto": 2000.0,
+            "montoFormateado": "$2.000",
+            "signo": -1,
+            "naturaleza": "CARGO"
+        }
+    ],
+    "enlaces": {
+        "movimientos": "/api/web/cuentas/101/movimientos",
+        "panel": "/api/web/cuentas/101/panel"
+    }
+}
+
+--- GET /api/web/cuentas/101/movimientos?pagina=0&tamano=3
+{
+    "movimientos": [
+        {
+            "id": 29,
+            "fecha": "2024-12-22",
+            "fechaFormateada": "22/12/2024",
+            "tipo": "DEPOSITO",
+            "etiquetaTipo": "Deposito",
+            "descripcion": "Ingreso navide\u00f1o",
+            "monto": 2500.0,
+            "montoFormateado": "$2.500",
+            "signo": 1,
+            "naturaleza": "ABONO"
+        },
+        {
+            "id": 28,
+            "fecha": "2024-11-23",
+            "fechaFormateada": "23/11/2024",
+            "tipo": "COMPRA",
+            "etiquetaTipo": "Compra con tarjeta",
+            "descripcion": "Compra en tienda",
+            "monto": 1500.0,
+            "montoFormateado": "$1.500",
+            "signo": -1,
+            "naturaleza": "CARGO"
+        },
+        {
+            "id": 27,
+            "fecha": "2024-11-22",
+            "fechaFormateada": "22/11/2024",
+            "tipo": "RETIRO",
+            "etiquetaTipo": "Retiro de efectivo",
+            "descripcion": "SIN DESCRIPCION",
+            "monto": 1000.0,
+            "montoFormateado": "$1.000",
+            "signo": -1,
+            "naturaleza": "CARGO"
+        }
+    ],
+    "pagina": 0,
+    "tamano": 3,
+    "totalElementos": 29,
+    "totalPaginas": 10,
+    "hayAnterior": false,
+    "haySiguiente": true
+}
+
+========================================================================
+ 4. CANAL MOVIL: la misma cuenta, respuesta minima
+========================================================================
+
+--- GET /api/movil/resumen  (sin numero de cuenta: sale del token)
+{"cuenta":101,"titular":"D. Prince","saldo":8000,"moneda":"CLP","movs":[{"f":"2024-12-22","t":"D","m":2500},{"f":"2024-11-23","t":"C","m":1500},{"f":"2024-11-22","t":"R","m":1000},{"f":"2024-11-11","t":"C","m":1000},{"f":"2024-10-06","t":"D","m":1500}]}
+
+  bytes del resumen movil: 253
+  bytes del panel web:     4390
+
+--- GET /api/movil/movimientos?limite=3
+[{"f":"2024-12-22","t":"D","m":2500},{"f":"2024-11-23","t":"C","m":1500},{"f":"2024-11-22","t":"R","m":1000}]
+
+--- El canal acota lo que la app puede pedir (limite 50 sobre un maximo de 20)
+{
+    "instante": "2026-09-14T22:22:16.200309173-03:00",
+    "estado": 400,
+    "error": "Solicitud invalida",
+    "detalle": "El limite debe estar entre 1 y 20 en el canal movil",
+    "ruta": "/api/movil/movimientos"
+}
+
+========================================================================
+ 5. CANAL CAJERO: operaciones criticas
+========================================================================
+
+--- GET /api/cajero/saldo
+{"disponible":8000,"moneda":"CLP","terminal":"ATM-PROVIDENCIA-07","instante":"2026-09-14 22:22:16"}
+
+--- POST /api/cajero/retiro  monto 2000
+{
+    "aprobado": true,
+    "montoEntregado": 2000,
+    "saldoRestante": 6000,
+    "moneda": "CLP",
+    "codigoAutorizacion": "AUT-618890",
+    "terminal": "ATM-PROVIDENCIA-07",
+    "instante": "2026-09-14 22:22:16"
+}
+
+--- Saldo despues del retiro
+{"disponible":6000,"moneda":"CLP","terminal":"ATM-PROVIDENCIA-07","instante":"2026-09-14 22:22:16"}
+
+--- Reglas del canal: monto que no es multiplo de 1000
+{
+    "instante": "2026-09-14T22:22:16.38819462-03:00",
+    "estado": 400,
+    "error": "Solicitud invalida",
+    "detalle": "El cajero solo entrega multiplos de 1000",
+    "ruta": "/api/cajero/retiro"
+}
+
+--- Reglas del canal: monto sobre el maximo por operacion
+{
+    "instante": "2026-09-14T22:22:16.420481677-03:00",
+    "estado": 400,
+    "error": "Solicitud invalida",
+    "detalle": "El monto maximo por operacion es 200000",
+    "ruta": "/api/cajero/retiro"
+}
+
+--- Saldo insuficiente
+{
+    "aprobado": false,
+    "montoEntregado": 0,
+    "saldoRestante": 6000,
+    "moneda": "CLP",
+    "terminal": "ATM-PROVIDENCIA-07",
+    "instante": "2026-09-14 22:22:16",
+    "motivoRechazo": "Saldo insuficiente para el monto solicitado"
+}
+
+========================================================================
+ 6. AUTORIZACION: un token solo sirve en su canal
+========================================================================
+
+  TOKEN        -> bff-web     -> bff-movil   -> bff-cajero
+  WEB          HTTP 200       HTTP 401       HTTP 401
+  MOVIL        HTTP 401       HTTP 200       HTTP 401
+  CAJERO       HTTP 401       HTTP 401       HTTP 200
+
+  Cada canal firma con una clave distinta y declara su propia audiencia:
+  la firma de un token ajeno ni siquiera verifica.
+
+--- Detalle del rechazo (token movil presentado al canal cajero)
+{
+    "instante": "2026-09-14T22:22:16.738327486-03:00",
+    "estado": 401,
+    "error": "No autenticado",
+    "detalle": "Se requiere un token valido del canal CAJERO. Obtenlo en el endpoint de autenticacion de este BFF.",
+    "ruta": "/api/cajero/saldo"
+}
+
+--- Sin token
+{
+    "instante": "2026-09-14T22:22:16.772999117-03:00",
+    "estado": 401,
+    "error": "No autenticado",
+    "detalle": "Se requiere un token valido del canal WEB. Obtenlo en el endpoint de autenticacion de este BFF.",
+    "ruta": "/api/web/cuentas/101/panel"
+}
+
+========================================================================
+ 7. AUTORIZACION A NIVEL DE RECURSO: la cuenta ajena
+========================================================================
+
+--- cliente101 intenta ver el panel de la cuenta 102
+{
+    "instante": "2026-09-14T22:22:16.810653136-03:00",
+    "estado": 403,
+    "error": "Acceso denegado",
+    "detalle": "Su sesion no esta habilitada para consultar la cuenta 102",
+    "ruta": "/api/web/cuentas/102/panel"
+}
+
+--- El ejecutivo si puede ver cualquier cuenta
+  permisos del ejecutivo:
+{
+  "iss": "bff-web",
+  "aud": [
+    "canal-web"
+  ],
+  "sub": "ejecutivo",
+  "canal": "WEB",
+  "roles": [
+    "ROLE_EJECUTIVO_WEB"
+  ],
+  "permisos": [
+    "VER_PANEL",
+    "VER_MOVIMIENTOS",
+    "VER_RESUMEN_ANUAL",
+    "VER_CUALQUIER_CUENTA"
+  ],
+  "contexto": "navegador"
+}
+vigencia: 28800 segundos
+  panel de la cuenta 102 con token de ejecutivo: HTTP 200
+
+========================================================================
+ 8. DEFENSA EN PROFUNDIDAD: el core autoriza por canal
+========================================================================
+  El core reconoce permisos distintos a cada BFF. Se emiten tokens de
+  servicio validos para cada uno y se prueban contra el mismo endpoint.
+
+  OPERACION                                    bff-web   bff-movil   bff-cajero
+  GET  /api/v1/cuentas/101                         200         200          200
+  GET  /api/v1/cuentas/101/resumen-anual           200         403          403
+  POST /api/v1/cuentas/101/retiros                 403         403          200
+  POST /api/v1/identidades/validar-tarjeta         403         403          200
+
+  403 = el core rechaza la operacion para ese canal aunque el token sea valido.
+  El BFF movil no puede retirar dinero ni aunque su propio codigo lo intentara.
+
+========================================================================
+ FIN DE LA EVIDENCIA
+========================================================================

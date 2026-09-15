@@ -1,0 +1,38 @@
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.4)
+
+22:24:58.258 [main] INFO  c.d.b.c.CoreBankingApiApplication - Starting CoreBankingApiApplication v1.0.0 using Java 21.0.12 with PID 48065 (/home/aandrewsv/duoc/BI8/DESARROLLO BACKEND III_004A/S5/Exp2_S5_Agustin_Andrews/core-banking-api/target/core-banking-api-1.0.0.jar started by aandrewsv in /home/aandrewsv/duoc/BI8/DESARROLLO BACKEND III_004A/S5/Exp2_S5_Agustin_Andrews/core-banking-api)
+22:24:58.263 [main] INFO  c.d.b.c.CoreBankingApiApplication - No active profile set, falling back to 1 default profile: "default"
+22:25:02.948 [main] INFO  o.s.b.w.e.t.TomcatWebServer - Tomcat initialized with port 8843 (https)
+22:25:03.007 [main] INFO  o.a.c.core.StandardService - Starting service [Tomcat]
+22:25:03.008 [main] INFO  o.a.c.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.30]
+22:25:03.135 [main] INFO  o.a.c.c.C.[.[localhost].[/] - Initializing Spring embedded WebApplicationContext
+22:25:03.141 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 4789 ms
+22:25:04.448 [main] INFO  c.z.hikari.HikariDataSource - core-pool - Starting...
+22:25:05.328 [main] INFO  c.z.hikari.pool.HikariPool - core-pool - Added connection org.postgresql.jdbc.PgConnection@cf01c2e
+22:25:05.338 [main] INFO  c.z.hikari.HikariDataSource - core-pool - Start completed.
+22:25:06.562 [main] WARN  o.s.b.a.s.s.UserDetailsServiceAutoConfiguration - 
+
+Using generated security password: 82c7533e-2800-4d5c-90de-3e985a10052c
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+22:25:06.580 [main] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+22:25:07.711 [main] INFO  o.s.b.a.e.w.EndpointLinksResolver - Exposing 1 endpoint beneath base path '/actuator'
+22:25:07.749 [main] INFO  c.d.b.c.c.ConfiguracionSeguridadCore - Cliente de servicio autorizado: bff-web -> [LEER_CUENTAS, LEER_MOVIMIENTOS, LEER_RESUMEN, VALIDAR_IDENTIDAD]
+22:25:07.750 [main] INFO  c.d.b.c.c.ConfiguracionSeguridadCore - Cliente de servicio autorizado: bff-movil -> [LEER_CUENTAS, LEER_MOVIMIENTOS, VALIDAR_IDENTIDAD]
+22:25:07.750 [main] INFO  c.d.b.c.c.ConfiguracionSeguridadCore - Cliente de servicio autorizado: bff-cajero -> [LEER_CUENTAS, REGISTRAR_RETIRO, VALIDAR_TARJETA]
+22:25:08.644 [main] INFO  o.a.t.u.n.N.certificate - Connector [https-jsse-nio-8843], TLS virtual host [_default_], certificate type [UNDEFINED] configured from keystore [/home/aandrewsv/.keystore] using alias [tomcat] with trust store [null]
+22:25:08.655 [main] INFO  o.s.b.w.e.t.TomcatWebServer - Tomcat started on port 8843 (https) with context path '/'
+22:25:08.672 [main] INFO  c.d.b.c.CoreBankingApiApplication - Started CoreBankingApiApplication in 11.302 seconds (process running for 12.323)
+22:25:09.028 [https-jsse-nio-8843-exec-5] INFO  o.a.c.c.C.[.[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+22:25:09.028 [https-jsse-nio-8843-exec-5] INFO  o.s.w.s.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+22:25:09.029 [https-jsse-nio-8843-exec-5] INFO  o.s.w.s.DispatcherServlet - Completed initialization in 1 ms
+22:25:09.408 [main] INFO  c.d.b.c.c.InicializadorCredenciales - Credenciales sembradas: 7 usuarios de canal y 3 tarjetas (hash BCrypt)

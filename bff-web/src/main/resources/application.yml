@@ -1,0 +1,69 @@
+server:
+  port: 8443
+  ssl:
+    enabled: true
+    bundle: bff-web
+  compression:
+    enabled: true
+    mime-types: application/json
+    # El panel supera holgadamente este umbral; comprimirlo es la otra mitad de
+    # la optimizacion de este canal, junto con ahorrar viajes.
+    min-response-size: 1KB
+
+spring:
+  application:
+    name: bff-web
+
+  ssl:
+    bundle:
+      jks:
+        # Certificado de servidor propio de este canal.
+        bff-web:
+          keystore:
+            location: file:../certificados/bff-web.p12
+            password: bancoxyz
+            type: PKCS12
+        # Almacen de confianza para hablar con el core por TLS.
+        bancoxyz:
+          truststore:
+            location: file:../certificados/confianza-bancoxyz.p12
+            password: bancoxyz
+            type: PKCS12
+
+  jackson:
+    default-property-inclusion: non_null
+    serialization:
+      write-dates-as-timestamps: false
+
+# Enlace con el core: este canal se identifica como bff-web y el core le
+# reconoce solo permisos de lectura.
+core:
+  url: https://localhost:8843
+  cliente-id: bff-web
+  secreto-servicio: "core-bancoxyz-secreto-de-servicio-2026-min-32-bytes"
+  bundle-ssl: bancoxyz
+  timeout-conexion: 3s
+  timeout-lectura: 8s
+
+canal-web:
+  emisor-token: bff-web
+  audiencia-token: canal-web
+  # Clave EXCLUSIVA de este canal: un token firmado con ella no verifica en los
+  # otros dos BFF, ni siquiera antes de mirar la audiencia.
+  secreto-token: "bff-web-clave-de-firma-canal-web-2026-32b"
+  # Ocho horas: la sesion acompana la jornada frente al navegador.
+  vigencia-token: 8h
+  movimientos-en-panel: 10
+  tamano-pagina-por-defecto: 25
+  tamano-pagina-maximo: 100
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+logging:
+  level:
+    root: INFO
+    com.duoc.bancoxyz: INFO
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{28} - %msg%n"

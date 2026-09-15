@@ -1,0 +1,64 @@
+server:
+  port: 8444
+  ssl:
+    enabled: true
+    bundle: bff-movil
+  compression:
+    enabled: true
+    mime-types: application/json
+    # Umbral bajo a proposito: en este canal conviene comprimir incluso las
+    # respuestas pequenas, porque el costo esta en la red y no en la CPU.
+    min-response-size: 256B
+
+spring:
+  application:
+    name: bff-movil
+
+  ssl:
+    bundle:
+      jks:
+        bff-movil:
+          keystore:
+            location: file:../certificados/bff-movil.p12
+            password: bancoxyz
+            type: PKCS12
+        bancoxyz:
+          truststore:
+            location: file:../certificados/confianza-bancoxyz.p12
+            password: bancoxyz
+            type: PKCS12
+
+  jackson:
+    default-property-inclusion: non_null
+    serialization:
+      write-dates-as-timestamps: false
+
+core:
+  url: https://localhost:8843
+  cliente-id: bff-movil
+  secreto-servicio: "core-bancoxyz-secreto-de-servicio-2026-min-32-bytes"
+  bundle-ssl: bancoxyz
+  timeout-conexion: 3s
+  timeout-lectura: 8s
+
+canal-movil:
+  emisor-token: bff-movil
+  audiencia-token: canal-movil
+  # Clave EXCLUSIVA de este canal.
+  secreto-token: "bff-movil-clave-de-firma-canal-movil-2026"
+  # Quince minutos: un telefono se extravia con mucha mas facilidad que un
+  # equipo de escritorio, de modo que la ventana de exposicion se acorta.
+  vigencia-token: 15m
+  movimientos-en-resumen: 5
+  movimientos-maximo: 20
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+logging:
+  level:
+    root: INFO
+    com.duoc.bancoxyz: INFO
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{28} - %msg%n"

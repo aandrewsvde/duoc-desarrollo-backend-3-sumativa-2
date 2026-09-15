@@ -1,0 +1,65 @@
+server:
+  port: 8445
+  ssl:
+    enabled: true
+    bundle: bff-cajero
+  compression:
+    enabled: true
+    mime-types: application/json
+    min-response-size: 256B
+
+spring:
+  application:
+    name: bff-cajero
+
+  ssl:
+    bundle:
+      jks:
+        bff-cajero:
+          keystore:
+            location: file:../certificados/bff-cajero.p12
+            password: bancoxyz
+            type: PKCS12
+        bancoxyz:
+          truststore:
+            location: file:../certificados/confianza-bancoxyz.p12
+            password: bancoxyz
+            type: PKCS12
+
+  jackson:
+    default-property-inclusion: non_null
+    serialization:
+      write-dates-as-timestamps: false
+
+core:
+  url: https://localhost:8843
+  cliente-id: bff-cajero
+  secreto-servicio: "core-bancoxyz-secreto-de-servicio-2026-min-32-bytes"
+  bundle-ssl: bancoxyz
+  timeout-conexion: 3s
+  # Mas corto que en los otros canales: una persona esperando frente a un cajero
+  # prefiere un rechazo rapido a una pantalla congelada.
+  timeout-lectura: 5s
+
+canal-cajero:
+  emisor-token: bff-cajero
+  audiencia-token: canal-cajero
+  # Clave EXCLUSIVA de este canal.
+  secreto-token: "bff-cajero-clave-de-firma-canal-cajero-26"
+  # 120 segundos: si el usuario se aleja del cajero, la sesion ya expiro.
+  vigencia-token: 120s
+  monto-minimo: 1000
+  monto-maximo: 200000
+  # El cajero solo carga billetes de mil.
+  multiplo: 1000
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+logging:
+  level:
+    root: INFO
+    com.duoc.bancoxyz: INFO
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{28} - %msg%n"

@@ -1,0 +1,23 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: bancoxyz-bff-postgres
+    environment:
+      POSTGRES_DB: bancoxyz_bff
+      POSTGRES_USER: bancoxyz
+      POSTGRES_PASSWORD: bancoxyz
+      TZ: America/Santiago
+    # Puerto 5434 para no chocar con otras instancias de PostgreSQL que puedan
+    # estar corriendo en la maquina (5432 del sistema, 5433 de la Experiencia 1).
+    ports:
+      - "5434:5432"
+    volumes:
+      - bancoxyz-bff-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bancoxyz -d bancoxyz_bff"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  bancoxyz-bff-pgdata:

@@ -1,0 +1,84 @@
+EVIDENCIA DE BASE DE DATOS - core bancario del Banco XYZ
+Generado: 2026-09-14 22:22:17
+
+### 1. Datos cargados desde bank_legacy_data ###
+       tabla        | count 
+--------------------+-------
+ cuenta             |    50
+ movimiento         |   688
+ retiro             |     2
+ tarjeta            |     3
+ transaccion_diaria |   401
+ usuario_canal      |     7
+(6 rows)
+
+### 2. Cuentas: una fila por cuenta, saldo y tipo ###
+ tipo_cuenta | cuentas | saldo_min | saldo_max 
+-------------+---------+-----------+-----------
+ AHORRO      |      17 |   5000.00 |  12000.00
+ HIPOTECA    |      17 |   5000.00 |  12000.00
+ PRESTAMO    |      16 |   5000.00 |  12000.00
+(3 rows)
+
+ numero_cuenta |    titular    | tipo_cuenta |  saldo   | edad_titular | estado 
+---------------+---------------+-------------+----------+--------------+--------
+           101 | Diana Prince  | AHORRO      |  5000.00 |           35 | ACTIVA
+           102 | Bob Johnson   | HIPOTECA    | 12000.00 |           35 | ACTIVA
+           103 | Diana Prince  | PRESTAMO    |  8000.00 |           45 | ACTIVA
+           104 | Bob Johnson   | PRESTAMO    | 12000.00 |           30 | ACTIVA
+           105 | Diana Prince  | PRESTAMO    | 10000.00 |           25 | ACTIVA
+           106 | Jane Smith    | PRESTAMO    | 12000.00 |           40 | ACTIVA
+           107 | Alice Brown   | PRESTAMO    | 10000.00 |           40 | ACTIVA
+           108 | Jane Smith    | PRESTAMO    | 12000.00 |          100 | ACTIVA
+           109 | Charlie Green | HIPOTECA    |  7000.00 |           45 | ACTIVA
+           110 | Jane Smith    | AHORRO      |  8000.00 |          100 | ACTIVA
+(10 rows)
+
+### 3. Movimientos ya clasificados en abono (+1) y cargo (-1) ###
+   tipo   | signo | movimientos | monto_total 
+----------+-------+-------------+-------------
+ DEPOSITO |     1 |         244 |   506000.00
+ COMPRA   |    -1 |         214 |   474500.00
+ RETIRO   |    -1 |         201 |   439000.00
+ PAGO     |    -1 |          29 |    58000.00
+(4 rows)
+
+### 4. Credenciales: nunca en claro, siempre BCrypt ###
+  usuario   | canal |  perfil   | cuenta_id |    hash_bcrypt    
+------------+-------+-----------+-----------+-------------------
+ movil101   | MOVIL | CLIENTE   |       101 | $2a$10$db5TQ9P...
+ movil102   | MOVIL | CLIENTE   |       102 | $2a$10$OTrG6OL...
+ movil103   | MOVIL | CLIENTE   |       103 | $2a$10$opAy6LE...
+ cliente101 | WEB   | CLIENTE   |       101 | $2a$10$6Jlnbf8...
+ cliente102 | WEB   | CLIENTE   |       102 | $2a$10$iY6n2Hp...
+ cliente103 | WEB   | CLIENTE   |       103 | $2a$10$ItFmdzP...
+ ejecutivo  | WEB   | EJECUTIVO |           | $2a$10$z1D8AD....
+(7 rows)
+
+       tarjeta       | cuenta_id | activa |    hash_bcrypt    
+---------------------+-----------+--------+-------------------
+ **** **** **** 0101 |       101 | t      | $2a$10$YhsX8zR...
+ **** **** **** 0102 |       102 | t      | $2a$10$sBHquKK...
+ **** **** **** 0103 |       103 | t      | $2a$10$4Y5Jq.f...
+(3 rows)
+
+### 5. Retiros ejecutados por el canal cajero ###
+ cuenta_id |  monto  |      terminal      | codigo_autorizacion | saldo_anterior | saldo_resultante |           referencia            
+-----------+---------+--------------------+---------------------+----------------+------------------+---------------------------------
+       101 | 2000.00 | ATM-PROVIDENCIA-07 | AUT-618890          |        8000.00 |          6000.00 | ATM-ATM-PROVIDENCIA-07-403dd...
+       101 | 1000.00 | X                  | AUT-561860          |        6000.00 |          5000.00 | prueba-permisos...
+(2 rows)
+
+### 6. Cada retiro dejo su movimiento, con el canal que lo origino ###
+ cuenta_id |   fecha    |  tipo  | signo |  monto  |             descripcion              | canal_origen 
+-----------+------------+--------+-------+---------+--------------------------------------+--------------
+       101 | 2026-09-14 | RETIRO |    -1 | 2000.00 | Retiro por cajero ATM-PROVIDENCIA-07 | CAJERO
+       101 | 2026-09-14 | RETIRO |    -1 | 1000.00 | Retiro por cajero X                  | CAJERO
+(2 rows)
+
+### 7. Coherencia: el saldo refleja los retiros del cajero ###
+ numero_cuenta | saldo_actual | retirado_por_cajero | saldo_antes_de_los_retiros 
+---------------+--------------+---------------------+----------------------------
+           101 |      5000.00 |             3000.00 |                    8000.00
+(1 row)
+

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.duoc.bancoxyz</groupId>
+        <artifactId>banco-xyz-bff</artifactId>
+        <version>1.0.0</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>core-contrato</artifactId>
+    <name>core-contrato</name>
+    <description>Tipos del contrato publicado por el core: los publica el productor y los consumen los canales</description>
+
+    <!--
+      Modulo sin dependencias de framework a proposito: son registros Java puros.
+      Al compartirlo el productor (core-banking-api) y los consumidores (los tres
+      BFF), el contrato no puede divergir entre ambos lados sin romper la
+      compilacion, que es justo cuando conviene enterarse.
+    -->
+</project>

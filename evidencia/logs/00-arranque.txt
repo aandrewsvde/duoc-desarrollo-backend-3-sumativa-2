@@ -1,0 +1,31 @@
+==> Levantando PostgreSQL
+ Network exp2_s5_agustin_andrews_default Creating 
+ Network exp2_s5_agustin_andrews_default Creating 
+ Volume exp2_s5_agustin_andrews_bancoxyz-bff-pgdata Creating 
+ Volume exp2_s5_agustin_andrews_bancoxyz-bff-pgdata Creating 
+ Volume exp2_s5_agustin_andrews_bancoxyz-bff-pgdata Created 
+ Volume exp2_s5_agustin_andrews_bancoxyz-bff-pgdata Created 
+ Network exp2_s5_agustin_andrews_default Created 
+ Network exp2_s5_agustin_andrews_default Created 
+ Container bancoxyz-bff-postgres Creating 
+ Container bancoxyz-bff-postgres Created 
+ Container bancoxyz-bff-postgres Starting 
+ Container bancoxyz-bff-postgres Started 
+    PostgreSQL disponible en el puerto 5434
+==> Arrancando core-banking-api en el puerto 8843
+==> Arrancando bff-web en el puerto 8443
+==> Arrancando bff-movil en el puerto 8444
+==> Arrancando bff-cajero en el puerto 8445
+==> Esperando a que los servicios respondan
+    core-banking-api listo -> https://localhost:8843
+    bff-web listo -> https://localhost:8443
+    bff-movil listo -> https://localhost:8444
+    bff-cajero listo -> https://localhost:8445
+
+Plataforma arriba:
+  core-banking-api  https://localhost:8843/swagger-ui.html   (solo servicios)
+  bff-web           https://localhost:8443/swagger-ui.html
+  bff-movil         https://localhost:8444/swagger-ui.html
+  bff-cajero        https://localhost:8445/swagger-ui.html
+
+Los clientes deben confiar en la CA: --cacert certificados/ca-bancoxyz.crt

@@ -1,0 +1,26 @@
+# Artefactos de compilacion
+target/
+*.class
+
+# Material criptografico.
+#
+# Los almacenes .p12 contienen claves privadas y no se versionan, ni siquiera
+# siendo de desarrollo: versionar una clave privada es un habito que despues se
+# repite con las que si importan. Se regeneran con:
+#     ./certificados/generar-certificados.sh
+certificados/*.p12
+certificados/*.key
+certificados/*.srl
+
+# Logs sueltos en la raiz del proyecto.
+# La regla va anclada con "/" a proposito: sin anclar, tambien se tragaria
+# evidencia/logs/, que es entregable evaluado.
+/*.log
+
+# Identificadores de proceso que dejan los scripts de arranque
+scripts/.*.pid
+
+.idea/
+.vscode/
+*.iml
+.DS_Store

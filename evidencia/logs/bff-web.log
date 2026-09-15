@@ -1,0 +1,34 @@
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.4)
+
+22:24:58.110 [main] INFO  c.d.b.b.w.BffWebApplication - Starting BffWebApplication v1.0.0 using Java 21.0.12 with PID 48067 (/home/aandrewsv/duoc/BI8/DESARROLLO BACKEND III_004A/S5/Exp2_S5_Agustin_Andrews/bff-web/target/bff-web-1.0.0.jar started by aandrewsv in /home/aandrewsv/duoc/BI8/DESARROLLO BACKEND III_004A/S5/Exp2_S5_Agustin_Andrews/bff-web)
+22:24:58.115 [main] INFO  c.d.b.b.w.BffWebApplication - No active profile set, falling back to 1 default profile: "default"
+22:25:02.627 [main] INFO  o.s.b.w.e.t.TomcatWebServer - Tomcat initialized with port 8443 (https)
+22:25:02.682 [main] INFO  o.a.c.core.StandardService - Starting service [Tomcat]
+22:25:02.683 [main] INFO  o.a.c.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.30]
+22:25:02.784 [main] INFO  o.a.c.c.C.[.[localhost].[/] - Initializing Spring embedded WebApplicationContext
+22:25:02.790 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 4555 ms
+22:25:03.602 [main] INFO  c.d.b.c.c.ConfiguracionClienteCore - Cliente del core: url=https://localhost:8843 clienteId=bff-web timeouts=3s/8s bundleSsl=bancoxyz
+22:25:04.416 [main] WARN  o.s.b.a.s.s.UserDetailsServiceAutoConfiguration - 
+
+Using generated security password: 4898b206-5601-4be2-bf9d-47f6617ea15c
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+22:25:04.459 [main] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+22:25:05.430 [main] INFO  o.s.b.a.e.w.EndpointLinksResolver - Exposing 1 endpoint beneath base path '/actuator'
+22:25:07.131 [main] INFO  o.a.t.u.n.N.certificate - Connector [https-jsse-nio-8443], TLS virtual host [_default_], certificate type [UNDEFINED] configured from keystore [/home/aandrewsv/.keystore] using alias [tomcat] with trust store [null]
+22:25:07.177 [main] INFO  o.s.b.w.e.t.TomcatWebServer - Tomcat started on port 8443 (https) with context path '/'
+22:25:07.221 [main] INFO  c.d.b.b.w.BffWebApplication - Started BffWebApplication in 9.881 seconds (process running for 10.869)
+22:25:09.271 [https-jsse-nio-8443-exec-5] INFO  o.a.c.c.C.[.[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+22:25:09.271 [https-jsse-nio-8443-exec-5] INFO  o.s.w.s.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+22:25:09.272 [https-jsse-nio-8443-exec-5] INFO  o.s.w.s.DispatcherServlet - Completed initialization in 1 ms
+22:27:01.916 [https-jsse-nio-8443-exec-9] INFO  o.s.a.AbstractOpenApiResource - Init duration for springdoc-openapi is: 332 ms
+22:32:10.759 [https-jsse-nio-8443-exec-7] INFO  o.s.a.AbstractOpenApiResource - Init duration for springdoc-openapi is: 130 ms
